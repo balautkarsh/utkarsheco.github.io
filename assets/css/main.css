@@ -1674,3 +1674,11 @@ input, select, textarea {
 
 
 
+<style>
+    hr {
+        border: 0;
+        height: 1px;
+        background-color: #ccc; /* Change to desired color */
+        margin: 20px 0; /* Adjust spacing as needed */
+    }
+</style>
