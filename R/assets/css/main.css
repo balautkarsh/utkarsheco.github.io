@@ -2830,6 +2830,7 @@ input, select, textarea {
 
 	#header {
 		padding: 8em 0 0.1em 0 ;
+
 	}
 
 		#header .logo {
@@ -2838,10 +2839,11 @@ input, select, textarea {
 			color: inherit;
 			font-weight: 900;
 			letter-spacing: 0.35em;
-			margin: 0 0 2.5em 0;
+			margin: -2.5em 3em 2.5em 1em; /*change hear for shifting headrer*/
 			text-decoration: none;
 			text-transform: uppercase;
 			display: inline-block;
+			float: right;
 		}
 
 			#header .logo > * {
