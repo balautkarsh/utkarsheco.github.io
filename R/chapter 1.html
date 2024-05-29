@@ -60,211 +60,210 @@
         <!-- Main -->
         <div id="main">
             <div class="inner">
-                <h1>Chapter 1: Bayesian vs. Frequentist Inference</h1>
+                <h1>Bayesian Inference</h1>
                 <hr style="border: 5px solid #FF5733; margin: 10px 0;">
-                <p>Statistical inference is a method used to make decisions or predictions about a population based on a sample of data. There are two main schools of thought in statistical inference: Bayesian and frequentist. Both approaches have their own strengths and weaknesses and are used in different circumstances. This chapter will explain the fundamental differences between Bayesian and frequentist inference and provide reproducible examples in R.</p>
+    <p>Bayesian inference revolves around the concept of using probability distributions to represent our beliefs about uncertain events or parameters. These beliefs are not static but evolve as we acquire new data.</p>
+    
+    <h2>Understanding through an example:</h2>
+    <p>Imagine you're a detective trying to solve a mystery. You start with some initial ideas (suspects) about who might have committed the crime. This is like your prior belief in Bayesian inference.</p>
+    <p>Now, you start gathering clues (evidence). Each clue either strengthens or weakens your suspicion about each suspect. For example, finding a fingerprint at the scene might strongly suggest one suspect is guilty, while discovering an alibi for another suspect might make them seem less likely. This is like the likelihood in Bayesian inference.</p>
+    <p>As you gather more and more clues, you keep updating your belief about who the culprit is. You're not just throwing away your initial ideas, but you're also letting the evidence guide you to a more informed conclusion. This process of continually refining your belief based on new evidence is the heart of Bayesian inference.</p>
+    <p>The final verdict you reach (who you believe is the most likely culprit) is your posterior belief. It's a combination of your initial hunch and all the clues you've gathered along the way.</p>
+    
+    <h2>Analogy: The Cookie Jar</h2>
+    <p>Let's use a simple analogy to make this even clearer:</p>
+    <ul>
+        <li>Jar A: 90% chocolate chip, 10% oatmeal</li>
+        <li>Jar B: 50% chocolate chip, 50% oatmeal</li>
+    </ul>
+    <p>You pick a cookie at random, and it's chocolate chip. Does this mean you definitely picked from Jar A? Not necessarily! It's still possible the cookie came from Jar B, just less likely.</p>
+    <p>Now, let's use Bayesian inference to figure this out:</p>
+    <ol>
+        <li><strong>Prior Belief:</strong> Before you even pick a cookie, your prior belief is that there's a 50/50 chance you'll pick from either jar.</li>
+        <li><strong>Likelihood:</strong> The fact that you got a chocolate chip cookie is the evidence. This evidence is more likely if you picked from Jar A (90% chocolate chip) than from Jar B (50% chocolate chip).</li>
+        <li><strong>Posterior Belief:</strong> Combining your prior belief and the likelihood, you can now update your belief about which jar you picked from. Since chocolate chip cookies are more common in Jar A, your posterior belief will now lean more towards Jar A. However, it's not 100% certain because there's still a chance the cookie came from Jar B.</li>
+    </ol>
+    
+    <h2>The Bayes Theorem:</h2>
+    <p>Bayes' Theorem is more than just a formula; it's a way of thinking about how we update our beliefs based on new evidence. It reflects the idea that our initial beliefs (prior probabilities) can be modified as we gather more information (likelihoods) to arrive at a more accurate understanding (posterior probabilities).</p>
+    
+    <h3>A Deeper Look at the Formula</h3>
+    <p>Let's revisit the formula with a more detailed explanation of each component:</p>
+    <p><code>P(A|B) = [P(B|A) * P(A)] / P(B)</code></p>
+    <ul>
+        <li><strong>P(A|B): The Posterior Probability</strong>
+            <p>This is the updated probability of event A happening after we know that event B has occurred. In other words, it's our revised belief about A given the new evidence B. Think of it as the "after" picture: How has our perspective on A changed after learning about B?</p>
+        </li>
+        <li><strong>P(B|A): The Likelihood</strong>
+            <p>This is the probability of observing the evidence (B) if the hypothesis (A) is true. It measures how well the evidence supports the hypothesis. Think of it as a compatibility check: How likely is it that we would see B if A were the case?</p>
+        </li>
+        <li><strong>P(A): The Prior Probability</strong>
+            <p>This is our initial belief about the probability of event A happening before we consider any new evidence. Think of it as the "before" picture: What did we think about A before we knew anything about B?</p>
+        </li>
+        <li><strong>P(B): The Marginal Likelihood (or Evidence)</strong>
+            <p>This is the overall probability of observing the evidence (B), regardless of whether the hypothesis (A) is true or not. It acts as a normalizing factor, ensuring that the posterior probability is valid. Think of it as the background information: How likely is B to happen in general?</p>
+        </li>
+    </ul>
+    
+    <h3>Calculating P(B): The Law of Total Probability</h3>
+    <p>The calculation of P(B) often requires using the law of total probability, which states that the probability of an event can be found by summing the probabilities of that event occurring under each possible condition. In the context of Bayes' Theorem:</p>
+    <p><code>P(B) = [P(B|A) * P(A)] + [P(B|not A) * P(not A)]</code></p>
+    <p>This means that the probability of observing B is the sum of:</p>
+    <ul>
+        <li>The probability of B happening when A is true, weighted by the prior probability of A.</li>
+        <li>The probability of B happening when A is false, weighted by the prior probability of not A.</li>
+    </ul>
+    
+    <h3>Example 1: Scenario: The Super Rare Disease</h3>
+    <p>Imagine there's a super rare disease called "Zombitis" that only affects 1 out of every 1000 people (0.1%). Scientists have developed a test for Zombitis, but it's not perfect:</p>
+    <ul>
+        <li><strong>True Positive:</strong> If someone has Zombitis, the test will correctly say they have it 99% of the time.</li>
+        <li><strong>False Positive:</strong> If someone doesn't have Zombitis, the test will incorrectly say they do have it 5% of the time.</li>
+    </ul>
+    <p><strong>The Question:</strong> You get tested for Zombitis, and the result is positive. Should you panic? What are the chances you actually have the disease?</p>
+    <p><strong>Intuitive (But Incorrect) Thinking</strong></p>
+    <p>It's tempting to think, "The test is 99% accurate, so I must have a 99% chance of having Zombitis!" But that's wrong. Here's why:</p>
+    <p>The test isn't just telling you whether you have the disease. It's also being influenced by how rare the disease is. Most people don't have Zombitis, so even a small false positive rate can lead to a lot of positive results in healthy people.</p>
+    <p><strong>Using Bayes' Theorem to Find the Real Answer</strong></p>
+    <p>Let's break down how Bayes' Theorem helps us calculate the actual probability you have Zombitis:</p>
+    <ol>
+        <li><strong>Define the Events:</strong>
+            <p><code>A</code> = You have Zombitis.<br>
+            <code>B</code> = The test result is positive.</p>
+        </li>
+        <li><strong>Know the Probabilities (From the Scenario):</strong>
+            <p><code>P(A) = 0.001</code> (The probability you have Zombitis is 0.1%)<br>
+            <code>P(B|A) = 0.99</code> (The probability of a positive test given you have Zombitis is 99%)<br>
+            <code>P(B|not A) = 0.05</code> (The probability of a positive test given you don't have Zombitis is 5%)</p>
+        </li>
+        <li><strong>Calculate <code>P(not A)</code>:</strong>
+            <p><code>P(not A) = 1 - P(A) = 0.999</code> (The probability you don't have Zombitis is 99.9%)</p>
+        </li>
+        <li><strong>Calculate <code>P(B)</code> (The Total Probability of a Positive Test):</strong>
+            <p>This combines the probability of a true positive and a false positive.<br>
+            <code>P(B) = [P(B|A) * P(A)] + [P(B|not A) * P(not A)]</code><br>
+            <code>P(B) = (0.99 * 0.001) + (0.05 * 0.999)</code><br>
+            <code>P(B) = 0.00099 + 0.04995</code><br>
+            <code>P(B) ≈ 0.05094</code> (About a 5.1% chance of getting a positive test, regardless of whether you have Zombitis or not)</p>
+        </li>
+        <li><strong>Apply Bayes' Theorem:</strong>
+            <p><code>P(A|B) = [P(B|A) * P(A)] / P(B)</code><br>
+            <code>P(A|B) = (0.99 * 0.001) / 0.05094</code><br>
+            <code>P(A|B) ≈ 0.0194</code> (About a 1.9% chance you actually have Zombitis given a positive test result)</p>
+        </li>
+    </ol>
+    <p><strong>The Big Reveal</strong></p>
+    <p>Even though the test seems very accurate, your chance of actually having Zombitis after a positive test is only about 1.9%. This is because the disease is so rare, those false positives become a big deal!</p>
+    <p><strong>Key Takeaway</strong></p>
+    <p>Bayes' Theorem helps us understand that the probability of something being true isn't just based on the test result itself, but also on how common or rare that thing is in the first place.</p>
+    
+    <h3>Example 2: The Suspicious Email</h3>
+    <p>Imagine you have a spam filter for your email. It's pretty good, but not perfect:</p>
+    <ul>
+        <li>95% of spam emails are correctly identified as spam.</li>
+        <li>1% of legitimate emails are mistakenly identified as spam (false positives).</li>
+        <li>Overall, about 20% of your emails are spam.</li>
+    </ul>
+    <p><strong>The Question:</strong> You get an email flagged as spam. What's the probability that it's actually spam?</p>
+    <p><strong>Using Bayes' Theorem to Find the Real Answer</strong></p>
+    <ol>
+        <li><strong>Define the Events:</strong>
+            <p><code>A</code> = The email is spam.<br>
+            <code>B</code> = The email is flagged as spam.</p>
+        </li>
+        <li><strong>Know the Probabilities (From the Scenario):</strong>
+            <p><code>P(A) = 0.20</code> (The probability an email is spam is 20%)<br>
+            <code>P(B|A) = 0.95</code> (The probability of being flagged as spam given it is spam is 95%)<br>
+            <code>P(B|not A) = 0.01</code> (The probability of being flagged as spam given it's not spam is 1%)</p>
+        </li>
+        <li><strong>Calculate <code>P(not A)</code>:</strong>
+            <p><code>P(not A) = 1 - P(A) = 0.80</code> (The probability an email is not spam is 80%)</p>
+        </li>
+        <li><strong>Calculate <code>P(B)</code> (The Total Probability of an Email Being Flagged as Spam):</strong>
+            <p>This combines the probability of a true positive (a spam email correctly flagged) and a false positive (a legitimate email incorrectly flagged).<br>
+            <code>P(B) = [P(B|A) * P(A)] + [P(B|not A) * P(not A)]</code><br>
+            <code>P(B) = (0.95 * 0.20) + (0.01 * 0.80)</code><br>
+            <code>P(B) = 0.19 + 0.008</code><br>
+            <code>P(B) = 0.198</code> (About a 19.8% chance of an email being flagged as spam, regardless of whether it actually is spam or not)</p>
+        </li>
+        <li><strong>Apply Bayes' Theorem:</strong>
+            <p><code>P(A|B) = [P(B|A) * P(A)] / P(B)</code><br>
+            <code>P(A|B) = (0.95 * 0.20) / 0.198</code><br>
+            <code>P(A|B) ≈ 0.9596</code> (About a 96% chance the email is actually spam given that it was flagged)</p>
+        </li>
+    </ol>
+    <p><strong>The Big Reveal</strong></p>
+    <p>Even though only 1% of legitimate emails are flagged as spam, the probability that a flagged email is actually spam is about 96%. This is because a large proportion of your emails are spam in the first place.</p>
+    
+    <h2>Bayesian vs Frequentist</h2>
+    <p>Imagine a pharmaceutical company has developed a new drug to treat a certain disease. They conduct a clinical trial to assess its effectiveness.</p>
+    
+    <h3>Classical Inference (Frequentist Approach)</h3>
+    <ul>
+        <li><strong>Hypothesis Testing:</strong> The researchers set up a null hypothesis (H0) that the drug has no effect and an alternative hypothesis (Ha) that the drug is effective.</li>
+        <li><strong>Data Collection:</strong> They collect data from the trial, typically measuring some outcome like the reduction in disease symptoms.</li>
+        <li><strong>Statistical Test:</strong> They perform a statistical test (e.g., t-test) to calculate a p-value, which represents the probability of observing the data or more extreme results if the null hypothesis were true.</li>
+        <li><strong>Decision:</strong> If the p-value is below a pre-determined threshold (often 0.05), they reject the null hypothesis and conclude that the drug is effective.</li>
+    </ul>
+    <p><strong>Key Points of Classical Inference:</strong></p>
+    <ul>
+        <li>Focus on the Null Hypothesis: The primary focus is on rejecting or failing to reject the null hypothesis.</li>
+        <li>No Prior Information: Classical inference does not incorporate any prior knowledge or beliefs about the drug's effectiveness.</li>
+        <li>Limited Uncertainty Quantification: The p-value only tells us the probability of observing the data under the null hypothesis, not the probability of the drug being effective.</li>
+    </ul>
+    <h3>Bayesian Inference</h3>
+<ul>
+    <li><strong>Prior Belief:</strong> The researchers start with a prior distribution representing their belief about the drug's effectiveness before the trial. This could be based on previous studies, expert opinions, or a skeptical viewpoint.</li>
+    <li><strong>Likelihood:</strong> They collect data from the trial and use it to construct a likelihood function, which describes how likely the observed data is under different values of the drug's effectiveness.</li>
+    <li><strong>Posterior Belief:</strong> They combine the prior distribution and the likelihood using Bayes' Theorem to obtain a posterior distribution, which represents their updated belief about the drug's effectiveness after seeing the trial data.</li>
+</ul>
+<p><strong>Key Points of Bayesian Inference:</strong></p>
+<ul>
+    <li>Focus on Parameter Estimation: The primary focus is on estimating the drug's effectiveness and quantifying uncertainty around that estimate.</li>
+    <li>Incorporates Prior Information: Bayesian inference allows for incorporating prior knowledge into the analysis, leading to more informed conclusions.</li>
+    <li>Full Uncertainty Quantification: The posterior distribution provides a complete picture of uncertainty about the drug's effectiveness, including credible intervals.</li>
+</ul>
 
-                <h2>Fundamental Differences</h2>
+<h3>Example: Interpretation of Results</h3>
+<p>Let's say both approaches find that the drug seems to be effective. However, their interpretations differ:</p>
+<ul>
+    <li><strong>Classical Inference:</strong> "We reject the null hypothesis that the drug has no effect, suggesting it is likely effective (p < 0.05)."</li>
+    <li><strong>Bayesian Inference:</strong> "Based on our prior belief and the observed data, we estimate the drug's effectiveness to be X% with a 95% credible interval of [Y%, Z%]."</li>
+</ul>
 
-                <h3>Frequentist Inference</h3>
-                <ul>
-                    <li><strong>Philosophy:</strong> Frequentist inference is based on the idea that probability is the long-term frequency of events. It treats parameters as fixed but unknown quantities.</li>
-                
-                    <li><strong>Parameter Estimation:</strong> Parameters are estimated using methods like maximum likelihood estimation (MLE) and hypothesis testing.</li>
-                    <li><strong>Uncertainty:</strong> Represented through confidence intervals and p-values.</li>
-                    <li><strong>Example:</strong> If you flip a coin 100 times and get 55 heads, a frequentist would say the probability of getting heads is 55%.</li>
-                </ul>
-
-                <h3>Bayesian Inference</h3>
-                <h4>The Essence of Bayesian Thinking</h4>
-                <p>Bayes' Theorem is more than just a formula; it's a way of thinking about how we update our beliefs based on new evidence. It reflects the idea that our initial beliefs (prior probabilities) can be modified as we gather more information (likelihoods) to arrive at a more accurate understanding (posterior probabilities).</p>
-
-                <h4>A Deeper Look at the Formula</h4>
-                <p>Let's revisit the formula with a more detailed explanation of each component:</p>
-                <p>\[
-                P(A|B) = \dfrac{P(B|A) \cdot P(A)}{P(B)}
-                \]</p>
-
-                <h4>P(A|B): The Posterior Probability</h4>
-                <p>This is the updated probability of event A happening after we know that event B has occurred. In other words, it's our revised belief about A given the new evidence B. Think of it as the "after" picture: How has our perspective on A changed after learning about B?</p>
-
-                <h4>P(B|A): The Likelihood</h4>
-                <p>This is the probability of observing the evidence (B) if the hypothesis (A) is true. It measures how well the evidence supports the hypothesis. Think of it as a compatibility check: How likely is it that we would see B if A were the case?</p>
-
-                <h4>P(A): The Prior Probability</h4>
-                <p>This is our initial belief about the probability of event A happening before we consider any new evidence. Think of it as the "before" picture: What did we think about A before we knew anything about B?</p>
-
-                <h4>P(B): The Marginal Likelihood (or Evidence)</h4>
-                <p>This is the overall probability of observing the evidence (B), regardless of whether the hypothesis (A) is true or not. It acts as a normalizing factor, ensuring that the posterior probability is valid. Think of it as the background information: How likely is B to happen in general?</p>
-
-                <h4>Calculating P(B): The Law of Total Probability</h4>
-                <p>The calculation of P(B) often requires using the law of total probability, which states that the probability of an event can be found by summing the probabilities of that event occurring under each possible condition. In the context of Bayes' Theorem:</p>
-                <p>\[
-                P(B) = P(B|A) \cdot P(A) + P(B|\neg A) \cdot P(\neg A)
-                \]</p>
-                <p>This means that the probability of observing B is the sum of:</p>
-                <ul>
-                    <li>The probability of B happening when A is true, weighted by the prior probability of A.</li>
-                    <li>The probability of B happening when A is false, weighted by the prior probability of not A.</li>
-                </ul>
-
-                <h4>Why Bayes' Theorem is Powerful</h4>
-                <p>Bayes' Theorem provides a rigorous framework for incorporating new information and updating our beliefs. It's particularly valuable in situations where:</p>
-                <ul>
-                    <li>We have incomplete or uncertain information.</li>
-                    <li>We want to make rational decisions based on the best available evidence.</li>
-                    <li>We need to account for the interplay between multiple factors or hypotheses.</li>
-                </ul>
-
-                <h4>Applications</h4>
-                <p>Bayes' Theorem is widely used in various fields, including:</p>
-                <ul>
-                    <li><strong>Medicine:</strong> Diagnosing diseases, assessing the effectiveness of treatments, interpreting medical tests.</li>
-                    <li><strong>Finance:</strong> Predicting market trends, managing risk, making investment decisions.</li>
-                    <li><strong>Machine Learning:</strong> Building spam filters, developing recommendation systems, classifying data.</li>
-                </ul>
-                <ul>
-                  
-
-                <h2>Basic Example of Bayes' Theorem<strong>Scenario: The Super Rare Disease</strong></h2>
-                
-                        <p>Imagine there's a super rare disease called "Zombitis" that only affects 1 out of every 1000 people (0.1%). Scientists have developed a test for Zombitis, but it's not perfect:</p>
-                        <ul>
-                            <li><strong>True Positive:</strong> If someone has Zombitis, the test will correctly say they have it 99% of the time.</li>
-                            <li><strong>False Positive:</strong> If someone doesn't have Zombitis, the test will incorrectly say they do have it 5% of the time.</li>
-                        </ul>
-                        <strong>The Question:</strong>
-                        <p>You get tested for Zombitis, and the result is positive. Should you panic? What are the chances you actually have the disease?</p>
-                        <strong>Intuitive (But Incorrect) Thinking</strong>
-                        <p>It's tempting to think, "The test is 99% accurate, so I must have a 99% chance of having Zombitis!" But that's wrong. Here's why:</p>
-                        <p>The test isn't just telling you whether you have the disease. It's also being influenced by how rare the disease is. Most people don't have Zombitis, so even a small false positive rate can lead to a lot of positive results in healthy people.</p>
-                        <strong>Using Bayes' Theorem to Find the Real Answer</strong>
-                        <p>Let's break down how Bayes' Theorem helps us calculate the actual probability you have Zombitis:</p>
-                        <strong>Define the Events:</strong>
-                        <p><code>A</code> = You have Zombitis.<br>
-                        <code>B</code> = The test result is positive.</p>
-                        <strong>Know the Probabilities (From the Scenario):</strong>
-                        <p><code>P(A) = 0.001</code> (The probability you have Zombitis is 0.1%)<br>
-                        <code>P(B|A) = 0.99</code> (The probability of a positive test given you have Zombitis is 99%)<br>
-                        <code>P(B|not A) = 0.05</code> (The probability of a positive test given you don't have Zombitis is 5%)</p>
-                        <strong>Calculate <code>P(not A)</code>:</strong>
-                        <p><code>P(not A) = 1 - P(A) = 0.999</code> (The probability you don't have Zombitis is 99.9%)</p>
-                        <strong>Calculate <code>P(B)</code> (The Total Probability of a Positive Test):</strong>
-                        <p>This combines the probability of a true positive and a false positive.<br>
-                        <code>P(B) = [P(B|A) * P(A)] + [P(B|not A) * P(not A)]</code><br>
-                        <code>P(B) = (0.99 * 0.001) + (0.05 * 0.999)</code><br>
-                        <code>P(B) = 0.00099 + 0.04995</code><br>
-                        <code>P(B) ≈ 0.05094</code> (About a 5.1% chance of getting a positive test, regardless of whether you have Zombitis or not)</p>
-                        <strong>Apply Bayes' Theorem:</strong>
-                        <p><code>P(A|B) = [P(B|A) * P(A)] / P(B)</code><br>
-                        <code>P(A|B) = (0.99 * 0.001) / 0.05094</code><br>
-                        <code>P(A|B) ≈ 0.0194</code> (About a 1.9% chance you actually have Zombitis given a positive test result)</p>
-                        <strong>The Big Reveal</strong>
-                        <p>Even though the test seems very accurate, your chance of actually having Zombitis after a positive test is only about 1.9%. This is because the disease is so rare, those false positives become a big deal!</p>
-                        <strong>Key Takeaway</strong>
-                        <p>Bayes' Theorem helps us understand that the probability of something being true isn't just based on the test result itself, but also on how common or rare that thing is in the first place.</p>
-                <p>Let's consider a simple example to understand Bayes' Theorem. Suppose we have two boxes. Box 1 contains 3 red balls and 2 blue balls, and Box 2 contains 1 red ball and 4 blue balls. One box is chosen at random, and a ball is drawn. If the ball is red, what is the probability that it was drawn from Box 1?</p>
-                                <pre><code class="language-r">
-# Define the probabilities
-P_Box1 <- 0.5
-P_Box2 <- 0.5
-P_Red_given_Box1 <- 3/5
-P_Red_given_Box2 <- 1/5
-
-# Calculate the total probability of drawing a red ball
-P_Red <- P_Box1 * P_Red_given_Box1 + P_Box2 * P_Red_given_Box2
-
-# Calculate the posterior probability using Bayes' Theorem
-P_Box1_given_Red <- (P_Red_given_Box1 * P_Box1) / P_Red
-P_Box1_given_Red
-                </code></pre>
-
-                    <li><strong>Parameter Estimation:</strong> Parameters are updated using Bayes' Theorem, which combines prior information with observed data to produce a posterior distribution.</li>
-                    <li><strong>Uncertainty:</strong> Represented through credible intervals.</li>
-                    <li><strong>Example:</strong> If you flip a coin 100 times and get 55 heads, a Bayesian would update their prior belief about the probability of getting heads based on this new evidence.</li>
-                </ul>
-
-                <h2>Reproducible Examples in R</h2>
-
-                <h3>Example 1: Coin Toss</h3>
-                <p>Let's consider a simple example of estimating the probability of getting heads in a coin toss.</p>
-
-                <h4>Frequentist Approach</h4>
-                <pre><code class="language-r">
-# Simulate coin toss data
-set.seed(123)
-n <- 100
-data <- rbinom(n, 1, 0.5)  # 100 coin tosses with a fair coin
-
-# Estimate the probability of heads
-p_hat <- mean(data)
-p_hat
-
-# Calculate the 95% confidence interval
-conf_int <- prop.test(sum(data), n)$conf.int
-conf_int
-                </code></pre>
-
-                <h4>Bayesian Approach</h4>
-                <pre><code class="language-r">
-# Load necessary libraries
-library(LearnBayes)
-
-# Define the prior distribution (Beta distribution)
-alpha <- 1
-beta <- 1
-
-# Update the prior with the observed data
-posterior <- beta.select(list(p = 0.5, x = 0.5), list(p = 0.5, x = 0.5))
-posterior
-
-# Simulate from the posterior distribution
-posterior_samples <- rbeta(1000, alpha + sum(data), beta + n - sum(data))
-
-# Estimate the probability of heads
-mean(posterior_samples)
-
-# Calculate the 95% credible interval
-quantile(posterior_samples, c(0.025, 0.975))
-                </code></pre>
-
-                <h3>Example 2: Linear Regression</h3>
-                <p>Let's consider a more complex example of linear regression.</p>
-
-                <h4>Frequentist Approach</h4>
-                <pre><code class="language-r">
-# Simulate data
-set.seed(123)
-n <- 100
-x <- rnorm(n)
-y <- 2 * x + rnorm(n)
-
-# Fit a linear model
-lm_fit <- lm(y ~ x)
-summary(lm_fit)
-
-# Plot the data and the fitted line
-plot(x, y)
-abline(lm_fit, col = "red")
-                </code></pre>
-
-                <h4>Bayesian Approach</h4>
-                <pre><code class="language-r">
-# Load necessary libraries
-library(rstanarm)
-
-# Fit a Bayesian linear model
-bayes_fit <- stan_glm(y ~ x, data = data.frame(x, y), prior = normal(0, 1), prior_intercept = normal(0, 1))
-summary(bayes_fit)
-
-# Plot the data and the fitted line
-plot(x, y)
-abline(coef(bayes_fit)[1], coef(bayes_fit)[2], col = "blue")
-                </code></pre>
-
-                <h2>Conclusion</h2>
-                <p>In this chapter, we have explored the fundamental differences between Bayesian and frequentist inference. We have seen that frequentist inference relies on long-term frequencies and fixed parameters, while Bayesian inference incorporates prior beliefs and updates them with observed data. The examples provided in R demonstrate how both approaches can be applied to real-world data.</p>
-                <p>By understanding these differences, you can choose the appropriate method for your specific needs and make more informed decisions in your statistical analyses.</p>
+<h3>Key Differences</h3>
+<table>
+    <tr>
+        <th>Feature</th>
+        <th>Classical Inference (Frequentist)</th>
+        <th>Bayesian Inference</th>
+    </tr>
+    <tr>
+        <td>Focus</td>
+        <td>Hypothesis testing (rejecting/failing to reject null hypothesis)</td>
+        <td>Parameter estimation and uncertainty quantification</td>
+    </tr>
+    <tr>
+        <td>Prior Information</td>
+        <td>Not incorporated</td>
+        <td>Incorporated</td>
+    </tr>
+    <tr>
+        <td>Uncertainty Quantification</td>
+        <td>Limited to p-value</td>
+        <td>Full posterior distribution and credible intervals</td>
+    </tr>
+    <tr>
+        <td>Interpretation of Results</td>
+        <td>Based on statistical significance</td>
+        <td>Based on probability of the hypothesis given the data</td>
+    </tr>
+    <tr>
+        <td>Philosophical Underpinnings</td>
+        <td>Objective probability based on long-run frequencies</td>
+        <td>Subjective probability representing degrees of belief</td>
+    </tr>
+</table>
             </div> 
         </div>
 
