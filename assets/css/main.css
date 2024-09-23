@@ -1682,3 +1682,11 @@ input, select, textarea {
         margin: 20px 0; /* Adjust spacing as needed */
     }
 </style>
+<style>
+    .pdf-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #f9f9f9;
+    }
+</style>
